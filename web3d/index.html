@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lone Cowboy 3D: Wild West Outlaws</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤠</text></svg>">
+</head>
+<body>
+    <div id="game-container">
+        <!-- 3D Canvas -->
+        <canvas id="webgl-canvas"></canvas>
+
+        <!-- In-Game HUD -->
+        <div id="hud">
+            <!-- Top Left: Health & Wave Info -->
+            <div class="hud-top-left">
+                <div class="hearts-container" id="hearts"></div>
+                <div class="wave-title" id="wave-title">Wave 1: Rattlesnake Rustlers</div>
+                <div class="outlaws-count" id="outlaws-count">OUTLAWS REMAINING: 3</div>
+            </div>
+
+            <!-- Top Right: Minimap Radar -->
+            <div class="hud-top-right">
+                <canvas id="minimap" width="140" height="140"></canvas>
+                <div style="font-size: 15px; color: #d4af37; margin-top: 4px;">RADAR</div>
+            </div>
+
+            <!-- Center Crosshair & Feedback -->
+            <div id="crosshair">
+                <div class="cross-line cross-h"></div>
+                <div class="cross-line cross-v"></div>
+                <div class="cross-line cross-dot"></div>
+            </div>
+            <div id="hitmarker"></div>
+            <div id="damage-flash"></div>
+            <div id="banner"></div>
+
+            <!-- Bottom Left: Revolver Cylinder & Ammo -->
+            <div class="hud-bottom-left">
+                <canvas id="cylinder-canvas" class="cylinder-canvas" width="58" height="58"></canvas>
+                <div class="ammo-details">
+                    <div class="ammo-text" id="ammo-text">6 / 6</div>
+                    <div class="reload-prompt" id="reload-prompt">[R] TO RELOAD</div>
+                    <div class="dynamite-count" id="dynamite-count">🧨 x3 [RMB/K]</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Start Screen -->
+        <div id="start-screen" class="menu-screen">
+            <h1 class="menu-title">LONE COWBOY 3D</h1>
+            <p class="menu-subtitle">Wild West Outlaw Gauntlet</p>
+            <button id="start-btn" class="menu-btn">DRAW REVOLVER (PLAY)</button>
+            <div class="controls-hint">
+                <strong>W, A, S, D</strong> - Move | <strong>SHIFT</strong> - Sprint | <strong>SPACE</strong> - Jump<br>
+                <strong>MOUSE</strong> - Aim & Look | <strong>LEFT CLICK</strong> - Shoot Revolver<br>
+                <strong>R</strong> - Reload Cylinder | <strong>RIGHT CLICK / K</strong> - Lob Dynamite<br>
+                <strong>F / V</strong> - Bowie Knife Slash | <strong>C</strong> - Crouch behind cover
+            </div>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div id="game-over-screen" class="menu-screen" style="display: none;">
+            <h1 class="menu-title" style="color: #ff3333;">YOU MET YOUR MAKER</h1>
+            <p class="menu-subtitle">The outlaw gang outdrew you this time, partner.</p>
+            <button id="retry-btn" class="menu-btn">RETRY WAVE</button>
+        </div>
+
+        <!-- Victory Screen -->
+        <div id="victory-screen" class="menu-screen" style="display: none;">
+            <h1 class="menu-title" style="color: #ffd700;">THE WEST IS WON!</h1>
+            <p class="menu-subtitle">All 5 Outlaw Gangs & Kingpin El Diablo Vanquished!</p>
+            <button id="victory-btn" class="menu-btn">PLAY AGAIN</button>
+        </div>
+    </div>
+
+    <!-- Main Module Script -->
+    <script type="module" src="./js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,279 @@
+@import url('https://fonts.googleapis.com/css2?family=Rye&family=VT323&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none;
+}
+
+body, html {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: #100c0a;
+    font-family: 'VT323', monospace;
+    color: #f8f4ec;
+}
+
+#game-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+}
+
+#webgl-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* -----------------------------------------------------------------
+   HUD Overlays
+----------------------------------------------------------------- */
+#hud {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+/* Top Left Stats */
+.hud-top-left {
+    position: absolute;
+    top: 20px;
+    left: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-shadow: 2px 2px 0px #000;
+}
+
+.hearts-container {
+    display: flex;
+    gap: 6px;
+}
+
+.heart {
+    width: 26px;
+    height: 26px;
+    background-color: #c42c26;
+    clip-path: polygon(50% 15%, 80% 0%, 100% 25%, 100% 60%, 50% 100%, 0% 60%, 0% 25%, 20% 0%);
+    border: 2px solid #eeb830;
+    box-shadow: 0 0 6px rgba(0,0,0,0.8);
+    transition: transform 0.15s, opacity 0.15s;
+}
+
+.heart.depleted {
+    background-color: #383a44;
+    opacity: 0.45;
+}
+
+.wave-title {
+    font-family: 'Rye', cursive;
+    font-size: 22px;
+    color: #eeb830;
+    letter-spacing: 1px;
+}
+
+.outlaws-count {
+    font-size: 24px;
+    color: #eedcc0;
+}
+
+/* Bottom Left Weapon & Ammo */
+.hud-bottom-left {
+    position: absolute;
+    bottom: 24px;
+    left: 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: rgba(20, 16, 14, 0.75);
+    padding: 12px 18px;
+    border: 2px solid #825434;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.7);
+}
+
+.cylinder-canvas {
+    width: 58px;
+    height: 58px;
+}
+
+.ammo-details {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.ammo-text {
+    font-size: 32px;
+    color: #ffffff;
+    text-shadow: 2px 2px 0 #000;
+}
+
+.reload-prompt {
+    font-size: 18px;
+    color: #eeb830;
+}
+
+.reload-prompt.reloading {
+    color: #ff4444;
+    animation: blink 0.4s infinite alternate;
+}
+
+.dynamite-count {
+    font-size: 22px;
+    color: #f5a623;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Minimap Radar Top Right */
+.hud-top-right {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    text-align: center;
+}
+
+#minimap {
+    width: 140px;
+    height: 140px;
+    background: rgba(22, 18, 14, 0.85);
+    border: 2px solid #d4af37;
+    border-radius: 50%;
+    box-shadow: 0 0 14px rgba(0,0,0,0.8);
+}
+
+/* Center Crosshair & Damage Vignette */
+#crosshair {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    pointer-events: none;
+}
+
+.cross-line {
+    position: absolute;
+    background: #ffffff;
+    box-shadow: 0 0 2px #000;
+}
+
+.cross-h { top: 9px; left: 0; width: 20px; height: 2px; }
+.cross-v { top: 0; left: 9px; width: 2px; height: 20px; }
+.cross-dot { top: 8px; left: 8px; width: 4px; height: 4px; background: #eeb830; border-radius: 50%; }
+
+#hitmarker {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+    width: 24px;
+    height: 24px;
+    border: 2px solid #ff2222;
+    opacity: 0;
+    transition: opacity 0.08s;
+}
+
+#damage-flash {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    box-shadow: inset 0 0 80px rgba(220, 20, 20, 0.8);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s;
+}
+
+/* Wave Banner Announcement */
+#banner {
+    position: absolute;
+    top: 18%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Rye', cursive;
+    font-size: 38px;
+    color: #ffd700;
+    text-shadow: 3px 3px 0 #000, 0 0 16px rgba(238, 184, 48, 0.8);
+    opacity: 0;
+    transition: opacity 0.4s;
+    text-align: center;
+}
+
+/* -----------------------------------------------------------------
+   Full-Screen Menus & Overlays
+----------------------------------------------------------------- */
+.menu-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(14, 10, 8, 0.88);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 18px;
+    z-index: 10;
+}
+
+.menu-title {
+    font-family: 'Rye', cursive;
+    font-size: 54px;
+    color: #eeb830;
+    text-shadow: 4px 4px 0 #000;
+    letter-spacing: 2px;
+}
+
+.menu-subtitle {
+    font-size: 26px;
+    color: #eedcc0;
+    margin-bottom: 12px;
+}
+
+.menu-btn {
+    font-family: 'VT323', monospace;
+    font-size: 28px;
+    padding: 10px 32px;
+    background: #442a1c;
+    color: #f8f4ec;
+    border: 2px solid #eeb830;
+    border-radius: 4px;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #1e120c;
+    transition: background 0.15s, transform 0.1s;
+}
+
+.menu-btn:hover {
+    background: #643e2a;
+    transform: translateY(-2px);
+}
+
+.menu-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 #1e120c;
+}
+
+.controls-hint {
+    margin-top: 16px;
+    font-size: 20px;
+    color: #a49080;
+    text-align: center;
+    line-height: 1.4;
+}
+
+@keyframes blink {
+    from { opacity: 1; }
+    to { opacity: 0.3; }
+}
